@@ -11,6 +11,7 @@ const App = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
+    fetch('https://lung-cancer-deploy-backend.onrender.com/');
     const saved = JSON.parse(localStorage.getItem('uem_lung_history') || "[]");
     setHistory(saved);
   }, []);
