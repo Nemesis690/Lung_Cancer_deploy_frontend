@@ -57,7 +57,7 @@ const App = () => {
 
   } catch (error) {
     console.error("Error:", error);
-    alert("The AI Engine is starting. Try again in 30 seconds.");
+    alert("Real Error:"+ error.message);
   } finally {
     setLoading(false);
   }
