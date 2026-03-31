@@ -30,32 +30,33 @@ const App = () => {
     setResult(null);
   };
 
-  const handlePredict = async () => {
+ const handlePredict = async () => {
   if (!selectedFile) return;
   setLoading(true);
+  setResult(null); // This clears the "94.8%" from the screen immediately
 
   const formData = new FormData();
   formData.append('file', selectedFile);
 
   try {
-    // 1. Point this to your LIVE Render URL
-    const response = await fetch('https://lung-cancer-deploy-backend.onrender.com/', {
+    // Note: MUST use /predict at the end of the URL
+    const response = await fetch('https://lung-cancer-deploy-backend.onrender.com/predict', {
       method: 'POST',
       body: formData,
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+        throw new Error("Server is waking up... please wait.");
+    }
 
-    // 2. Map the API response to your UI state
-    setResult({
-      prediction: data.prediction,
-      confidence: data.confidence,
-      is_cancer: data.is_cancer,
-      timestamp: new Date().toLocaleTimeString(),
-      fileName: selectedFile.name
-    });
+    const data = await response.json();
+    
+    // This 'data' comes from your Python model!
+    setResult(data); 
+
   } catch (error) {
-    alert("AI Engine is warming up. Please try again in 30 seconds.");
+    console.error("Error:", error);
+    alert("The AI Engine is starting. Try again in 30 seconds.");
   } finally {
     setLoading(false);
   }
